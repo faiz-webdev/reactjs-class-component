@@ -28,16 +28,20 @@ export class News extends Component {
   };
 
   async updateNews() {
+    this.props.setProgress(10)
     let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=de8d955c0cea4ba981ab91a5aba37f40&page=${this.state.page}&pageSize=${this.props.pageSize}`;
     this.setState({ loading: true });
     let data = await fetch(url);
+    this.props.setProgress(30)
     let parsedData = await data.json();
+    this.props.setProgress(70)
     this.setState({
       articles: parsedData.articles,
       page: this.state.page,
       totalResults: parsedData.totalResults,
       loading: false,
     });
+    this.props.setProgress(100)
   }
 
   async componentDidMount() {
@@ -124,7 +128,7 @@ export class News extends Component {
         >
           <div className="container">
             <div className="row">
-              {this.state.articles.map((elem) => {
+              {this.state.articles.map((elem, index) => {
                 return (
                   <div className="col-md-4" key={elem.url}>
                     <NewsItem
@@ -135,6 +139,7 @@ export class News extends Component {
                       author={elem.author}
                       date={elem.publishedAt}
                       source={elem.source.name}
+                      key={index}
                     />
                   </div>
                 );
